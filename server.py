@@ -26,6 +26,7 @@ def handle_robot_status_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             print(f"[{addr}] {msg}")
             conn.send(b"Ready")
+            #.......
         else:
             connected = False
 
@@ -93,6 +94,18 @@ def start():
             thread.start()
         elif thread_count == 1:
             thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
+            thread.start()
+        elif thread_count == 1:
+            thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
+            thread.start()
+        elif thread_count == 2:
+            thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
+            thread.start()
+        elif thread_count == 3:
+            thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
+            thread.start()
+        elif thread_count == 4:
+            thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
             thread.start()
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
