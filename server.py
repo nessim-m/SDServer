@@ -53,7 +53,8 @@ def handle_robot_cpu_temp_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg= str('{get_cpu_temp_func()}\N{DEGREE SIGN}')
+        # msg= str('{get_cpu_temp_func()}\N{DEGREE SIGN}')
+        msg= str(get_cpu_temp_func())
         conn.send(msg.encode('ASCII'))
         time.sleep(2)
 
