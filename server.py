@@ -4,7 +4,7 @@ import threading
 import time
 import psutil
 
-HOST = '192.168.0.96'
+HOST = '192.168.1.139'
 PORT = 5001
 ADDR = (HOST, PORT)
 HEADER = 64
