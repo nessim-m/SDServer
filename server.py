@@ -53,7 +53,8 @@ def handle_robot_cpu_temp_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(str('{get_cpu_temp_func()}\N{DEGREE SIGN}').encode('ASCII'))
+        msg= str('{get_cpu_temp_func()}\N{DEGREE SIGN}')
+        conn.send(msg.encode('ASCII'))
         time.sleep(2)
 
     conn.close()
@@ -65,7 +66,8 @@ def handle_robot_cpu_usage_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(str(f"{get_cpu_use()}%").encode('ASCII'))
+        msg = str(f"{get_cpu_use()}%")
+        conn.send(msg.encode('ASCII'))
         time.sleep(2)
 
     conn.close()
@@ -77,7 +79,8 @@ def handle_robot_ram_usage_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(str(f"{get_ram_info()}%").encode('ASCII'))
+        msg = str(f"{get_ram_info()}%")
+        conn.send(msg.encode('ASCII'))
         time.sleep(2)
 
     conn.close()
