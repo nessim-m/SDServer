@@ -70,7 +70,7 @@ def handle_robot_cpu_usage_client(conn, addr):
     while connected:
         msg = str(f"{get_cpu_use()}%")
         conn.send(msg.encode('ASCII'))
-        time.sleep(2)
+        time.sleep(1)
 
     conn.close()
 
@@ -83,7 +83,7 @@ def handle_robot_ram_usage_client(conn, addr):
     while connected:
         msg = str(f"{get_ram_info()}%")
         conn.send(msg.encode('ASCII'))
-        time.sleep(2)
+        time.sleep(1)
 
     conn.close()
 
@@ -103,12 +103,12 @@ def start():
         elif thread_count == 2:
             thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
             thread.start()
-        # elif thread_count == 3:
-        #     thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
-        #     thread.start()
-        # elif thread_count == 4:
-        #     thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
-        #     thread.start()
+        elif thread_count == 3:
+            thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
+            thread.start()
+        elif thread_count == 4:
+            thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
+            thread.start()
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
