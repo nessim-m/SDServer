@@ -102,12 +102,12 @@ def start():
         elif thread_count == 2:
             thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
             thread.start()
-        elif thread_count == 3:
-            thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
-            thread.start()
-        elif thread_count == 4:
-            thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
-            thread.start()
+        # elif thread_count == 3:
+        #     thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
+        #     thread.start()
+        # elif thread_count == 4:
+        #     thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
+        #     thread.start()
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
