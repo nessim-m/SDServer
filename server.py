@@ -99,9 +99,6 @@ def start():
         elif thread_count == 1:
             thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
             thread.start()
-        elif thread_count == 1:
-            thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
-            thread.start()
         elif thread_count == 2:
             thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
             thread.start()
