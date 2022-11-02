@@ -41,8 +41,6 @@ def handle_robot_distance_client(conn, addr):
     while connected:
         conn.send(str(random.randint(0, 50)).encode('ASCII'))
         time.sleep(1)
-        conn.send(str(random.randint(0, 50)).encode('ASCII'))
-        time.sleep(1)
 
     conn.close()
 
