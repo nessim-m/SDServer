@@ -26,7 +26,7 @@ def handle_robot_status_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             print(f"[{addr}] {msg}")
             conn.send(b"Ready")
-            #.......
+            # .......
         else:
             connected = False
 
@@ -53,7 +53,8 @@ def handle_robot_cpu_temp_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg= str('{get_cpu_temp_func()}\N{DEGREE SIGN}')
+        # msg= str('{get_cpu_temp_func()}\N{DEGREE SIGN}')
+        msg = str(get_cpu_temp_func())
         # msg= str("0")
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
