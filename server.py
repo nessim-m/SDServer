@@ -4,14 +4,9 @@ import threading
 import time
 import psutil
 
-HOST = '192.168.1.139'
-PORT = 5001
-ADDR = (HOST, PORT)
+HOST = '192.168.0.96'
 HEADER = 64
 FORMAT = 'utf-8'
-
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(ADDR)
 
 
 # THREAD 1
@@ -89,28 +84,93 @@ def handle_robot_ram_usage_client(conn, addr):
 
 
 def start():
-    server.listen()
-    print(f"[LISTENING] Server is listening on {HOST}")
-    while True:
-        conn, addr = server.accept()
-        thread_count = threading.active_count() - 1
-        if thread_count == 0:
-            thread = threading.Thread(target=handle_robot_status_client, args=(conn, addr))
-            thread.start()
-        elif thread_count == 1:
-            thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
-            thread.start()
-        elif thread_count == 2:
-            thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
-            thread.start()
-        elif thread_count == 3:
-            thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
-            thread.start()
-        elif thread_count == 4:
-            thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
-            thread.start()
+    status_server_port = 5001
+    distance_server_port = 5002
+    cpu_temp_server_port = 5003
+    cpu_usage_server_port = 5004
+    ram_usage_server_port = 5005
 
+    status_addr = (HOST, status_server_port)
+    distance_addr = (HOST, distance_server_port)
+    cpu_temp_addr = (HOST, cpu_temp_server_port)
+    cpu_usage_addr = (HOST, cpu_usage_server_port)
+    ram_usage_addr = (HOST, ram_usage_server_port)
+
+    status_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    status_server.bind(status_addr)
+    status_server.listen()
+
+    distance_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    distance_server.bind(distance_addr)
+    distance_server.listen()
+
+    cpu_temp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    cpu_temp_server.bind(cpu_temp_addr)
+    cpu_temp_server.listen()
+
+    cpu_usage_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    cpu_usage_server.bind(cpu_usage_addr)
+    cpu_usage_server.listen()
+
+    ram_usage_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ram_usage_server.bind(ram_usage_addr)
+    ram_usage_server.listen()
+
+    print(f"[LISTENING] Server is listening on {HOST}")
+
+    while True:
+        status_server_conn, status_server_addr = status_server.accept()
+        distance_server_conn, distance_server_addr = distance_server.accept()
+        cpu_temp_server_conn, cpu_temp_server_addr = cpu_temp_server.accept()
+        cpu_usage_server_conn, cpu_usage_server_addr = cpu_usage_server.accept()
+        ram_usage_server_conn, ram_usage_server_addr = ram_usage_server.accept()
+
+        thread_count = threading.active_count() - 1
+
+        status_server_thread = threading.Thread(target=handle_robot_status_client,
+                                                args=(status_server_conn, status_server_addr))
+        status_server_thread.start()
+        distance_server_thread = threading.Thread(target=handle_robot_distance_client,
+                                                  args=(distance_server_conn, distance_server_addr))
+        distance_server_thread.start()
+        cpu_temp_server_thread = threading.Thread(target=handle_robot_cpu_temp_client,
+                                                  args=(cpu_temp_server_conn, cpu_temp_server_addr))
+        cpu_temp_server_thread.start()
+        cpu_usage_server_thread = threading.Thread(target=handle_robot_cpu_usage_client,
+                                                   args=(cpu_usage_server_conn, cpu_usage_server_addr))
+        cpu_usage_server_thread.start()
+        ram_usage_server_thread = threading.Thread(target=handle_robot_ram_usage_client,
+                                                   args=(ram_usage_server_conn, ram_usage_server_addr))
+        ram_usage_server_thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+
+    # port = 5001
+    # addr = (HOST, pr)
+    # server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # server.bind(ADDR)
+    # server.listen()
+    # print(f"[LISTENING] Server is listening on {HOST}")
+    # while True:
+    #     conn, addr = server.accept()
+    #     thread_count = threading.active_count() - 1
+    #     if thread_count == 0:
+    #         thread = threading.Thread(target=handle_robot_status_client, args=(conn, addr))
+    #         thread.start()
+    #     elif thread_count == 1:
+    #         thread = threading.Thread(target=handle_robot_distance_client, args=(conn, addr))
+    #         thread.start()
+    #     elif thread_count == 2:
+    #         thread = threading.Thread(target=handle_robot_cpu_temp_client, args=(conn, addr))
+    #         thread.start()
+    #     elif thread_count == 3:
+    #         thread = threading.Thread(target=handle_robot_cpu_usage_client, args=(conn, addr))
+    #         thread.start()
+    #     elif thread_count == 4:
+    #         thread = threading.Thread(target=handle_robot_ram_usage_client, args=(conn, addr))
+    #         thread.start()
+    #
+    #     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+    #
 
 
 def get_cpu_use():
