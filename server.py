@@ -7,8 +7,10 @@ import psutil
 HOST = '192.168.1.139'
 HEADER = 64
 FORMAT = 'utf-8'
+from gps import *
+from flask import Flask, render_template, Response, send_from_directory
 
-
+app = Flask(__name__)
 # THREAD 1
 def handle_robot_status_client(conn, addr):
     print(f"[ROBOT STATUS CLIENT] {addr} connected.")
@@ -21,6 +23,7 @@ def handle_robot_status_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             print(f"[{addr}] {msg}")
             conn.send(b"Ready")
+            app.run(threaded=True,host='0.0.0.0', port=5000)
             # .......
         else:
             connected = False
@@ -34,7 +37,7 @@ def handle_robot_distance_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(str(random.randint(0, 50)).encode('ASCII'))
+        conn.send(get_udistance().encode('ASCII'))
         time.sleep(1)
 
     conn.close()
@@ -172,6 +175,13 @@ def start():
     #     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
     #
 
+from obj import gen_frame
+@app.route('/')
+def video_feed():
+    return Response(gen_frame(),
+
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 def get_cpu_use():
     """ Return CPU usage using psutil"""
@@ -197,6 +207,11 @@ def get_ram_info():
     ram_cent = psutil.virtual_memory()[2]
     return str(ram_cent)
 
+def get_udistance():
+    #path = 'C:\\Users\\Username\\Path\\To\\File'
+    path = '\home\pi\adeept_picarpro\server\distData.txt'
+    with open(path, 'r') as f:
+        return str(f.read())
 
 print("[STARTING] server is starting...")
 start()
