@@ -39,7 +39,7 @@ def handle_robot_distance_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(get_udistance().encode('ASCII'))
+        conn.send(get_distance().encode('ASCII'))
         time.sleep(1)
 
     conn.close()
@@ -94,7 +94,7 @@ def handle_robot_latitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(f"{getLatitude()}")
+        msg = getLatitude()
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -107,7 +107,7 @@ def handle_robot_longitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(f"{getLongitude()}")
+        msg = getLongitude()
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -193,7 +193,7 @@ def start():
         latitude_server_thread.start()
 
         longitude_server_thread = threading.Thread(target=handle_robot_longitude_client,
-                                                  args=(longitude_server_conn, longitude_server_addr))
+                                                   args=(longitude_server_conn, longitude_server_addr))
         longitude_server_thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
@@ -261,7 +261,7 @@ def get_ram_info():
     return str(ram_cent)
 
 
-def get_udistance():
+def get_distance():
     # path = 'C:\\Users\\Username\\Path\\To\\File'
     path = '\home\pi\adeept_picarpro\server\distData.txt'
     with open(path, 'r') as f:
