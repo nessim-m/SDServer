@@ -11,6 +11,8 @@ from gps import *
 from flask import Flask, render_template, Response, send_from_directory
 
 app = Flask(__name__)
+
+
 # THREAD 1
 def handle_robot_status_client(conn, addr):
     print(f"[ROBOT STATUS CLIENT] {addr} connected.")
@@ -23,7 +25,7 @@ def handle_robot_status_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             print(f"[{addr}] {msg}")
             conn.send(b"Ready")
-            app.run(threaded=True,host='0.0.0.0', port=5000)
+            app.run(threaded=True, host='0.0.0.0', port=5000)
             # .......
         else:
             connected = False
@@ -86,18 +88,48 @@ def handle_robot_ram_usage_client(conn, addr):
     conn.close()
 
 
+# THREAD 6
+def handle_robot_latitude_client(conn, addr):
+    print(f"[ROBOT DISTANCE CLIENT] {addr} connected.")
+    connected = True
+    time.sleep(2)
+    while connected:
+        msg = str(f"{get_ram_info()}%")
+        conn.send(msg.encode('ASCII'))
+        time.sleep(1)
+
+    conn.close()
+
+
+# THREAD 7
+def handle_robot_longitude_client(conn, addr):
+    print(f"[ROBOT DISTANCE CLIENT] {addr} connected.")
+    connected = True
+    time.sleep(2)
+    while connected:
+        msg = str(f"{get_ram_info()}%")
+        conn.send(msg.encode('ASCII'))
+        time.sleep(1)
+
+    conn.close()
+
+
 def start():
     status_server_port = 5001
     distance_server_port = 5002
     cpu_temp_server_port = 5003
     cpu_usage_server_port = 5004
     ram_usage_server_port = 5005
+    latitude_server_port = 5006
+    longitude_server_port = 5007
 
     status_addr = (HOST, status_server_port)
     distance_addr = (HOST, distance_server_port)
     cpu_temp_addr = (HOST, cpu_temp_server_port)
     cpu_usage_addr = (HOST, cpu_usage_server_port)
     ram_usage_addr = (HOST, ram_usage_server_port)
+    latitude_addr = (HOST, latitude_server_port)
+    longitude_addr = (HOST, longitude_server_port)
 
     status_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     status_server.bind(status_addr)
@@ -119,6 +151,14 @@ def start():
     ram_usage_server.bind(ram_usage_addr)
     ram_usage_server.listen()
 
+    latitude_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    latitude_server.bind(latitude_addr)
+    latitude_server.listen()
+
+    longitude_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    longitude_server.bind(longitude_addr)
+    longitude_server.listen()
+
     print(f"[LISTENING] Server is listening on {HOST}")
 
     while True:
@@ -127,6 +167,8 @@ def start():
         cpu_temp_server_conn, cpu_temp_server_addr = cpu_temp_server.accept()
         cpu_usage_server_conn, cpu_usage_server_addr = cpu_usage_server.accept()
         ram_usage_server_conn, ram_usage_server_addr = ram_usage_server.accept()
+        latitude_server_conn, latitude_server_addr = latitude_server.accept()
+        longitude_server_conn, longitude_server_addr = longitude_server.accept()
 
         thread_count = threading.active_count() - 1
 
@@ -145,6 +187,14 @@ def start():
         ram_usage_server_thread = threading.Thread(target=handle_robot_ram_usage_client,
                                                    args=(ram_usage_server_conn, ram_usage_server_addr))
         ram_usage_server_thread.start()
+
+        latitude_server_thread = threading.Thread(target=handle_robot_latitude_client,
+                                                  args=(latitude_server_conn, latitude_server_addr))
+        latitude_server_thread.start()
+
+        longitude_server_thread = threading.Thread(target=handle_robot_longitude_client,
+                                                  args=(longitude_server_conn, longitude_server_addr))
+        longitude_server_thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
     # port = 5001
@@ -175,7 +225,10 @@ def start():
     #     print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
     #
 
+
 from obj import gen_frame
+
+
 @app.route('/')
 def video_feed():
     return Response(gen_frame(),
@@ -207,11 +260,13 @@ def get_ram_info():
     ram_cent = psutil.virtual_memory()[2]
     return str(ram_cent)
 
+
 def get_udistance():
-    #path = 'C:\\Users\\Username\\Path\\To\\File'
+    # path = 'C:\\Users\\Username\\Path\\To\\File'
     path = '\home\pi\adeept_picarpro\server\distData.txt'
     with open(path, 'r') as f:
         return str(f.read())
+
 
 print("[STARTING] server is starting...")
 start()
