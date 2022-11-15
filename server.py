@@ -94,7 +94,7 @@ def handle_robot_latitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(f"{get_ram_info()}%")
+        msg = str(f"{getLatitude()}")
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -107,7 +107,7 @@ def handle_robot_longitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(f"{get_ram_info()}%")
+        msg = str(f"{getLongitude()}")
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
