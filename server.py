@@ -39,7 +39,7 @@ def handle_robot_distance_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg= str(get_distance())
+        msg = str(get_distance())
         print(f"-----------------Distance {msg}")
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
@@ -96,7 +96,8 @@ def handle_robot_latitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(getLatitude())
+        # msg = str(getLatitude())
+        msg = "36.11N"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -109,11 +110,13 @@ def handle_robot_longitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(getLongitude())
+        # msg = str(getLongitude())
+        msg = "115.14W"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
     conn.close()
+
 
 # THREAD 8
 def handle_robot_altitude_client(conn, addr):
@@ -121,11 +124,13 @@ def handle_robot_altitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = str(getAltitude())
+        # msg = str(getAltitude())
+        msg = "616.61M"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
     conn.close()
+
 
 def start():
     status_server_port = 5001
@@ -216,8 +221,9 @@ def start():
                                                    args=(longitude_server_conn, longitude_server_addr))
         longitude_server_thread.start()
 
-        altitude_server_thread = threading.Thread(target=handle_robot_latitude_client, args=(altitude_server_conn, altitude_server_addr))
-        
+        altitude_server_thread = threading.Thread(target=handle_robot_latitude_client,
+                                                  args=(altitude_server_conn, altitude_server_addr))
+
         altitude_server_thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
@@ -287,15 +293,14 @@ def get_ram_info():
 
 def get_distance():
     a = open("/home/pi/adeept_picarpro/server/distData.txt", "r")
-    #print("***distance: " + a.read())
-    #distance= str(a.readline())
-    #a.close()
-    #return distance
+    # print("***distance: " + a.read())
+    # distance= str(a.readline())
+    # a.close()
+    # return distance
     value = float(a.readline())
     value = str(value)
     a.close()
     return value
-
 
 
 print("[STARTING] server is starting...")
