@@ -221,7 +221,7 @@ def start():
                                                    args=(longitude_server_conn, longitude_server_addr))
         longitude_server_thread.start()
 
-        altitude_server_thread = threading.Thread(target=handle_robot_latitude_client,
+        altitude_server_thread = threading.Thread(target=handle_robot_altitude_client,
                                                   args=(altitude_server_conn, altitude_server_addr))
 
         altitude_server_thread.start()
