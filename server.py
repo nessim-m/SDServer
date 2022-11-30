@@ -97,7 +97,7 @@ def handle_robot_latitude_client(conn, addr):
     time.sleep(2)
     while connected:
         # msg = str(getLatitude())
-        msg = "36.11N"
+        msg = "66.11N"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -111,7 +111,7 @@ def handle_robot_longitude_client(conn, addr):
     time.sleep(2)
     while connected:
         # msg = str(getLongitude())
-        msg = "115.14W"
+        msg = "85.14W"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -125,7 +125,7 @@ def handle_robot_altitude_client(conn, addr):
     time.sleep(2)
     while connected:
         # msg = str(getAltitude())
-        msg = "616.61M"
+        msg = "52.61M"
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
