@@ -39,7 +39,9 @@ def handle_robot_distance_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        conn.send(get_distance().encode('ASCII'))
+        msg= str(get_distance())
+        print(f"-----------------Distance {msg}")
+        conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
     conn.close()
@@ -94,7 +96,7 @@ def handle_robot_latitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = getLatitude()
+        msg = str(getLatitude())
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
@@ -107,12 +109,23 @@ def handle_robot_longitude_client(conn, addr):
     connected = True
     time.sleep(2)
     while connected:
-        msg = getLongitude()
+        msg = str(getLongitude())
         conn.send(msg.encode('ASCII'))
         time.sleep(1)
 
     conn.close()
 
+# THREAD 8
+def handle_robot_altitude_client(conn, addr):
+    print(f"[ROBOT DISTANCE CLIENT] {addr} connected.")
+    connected = True
+    time.sleep(2)
+    while connected:
+        msg = str(getAltitude())
+        conn.send(msg.encode('ASCII'))
+        time.sleep(1)
+
+    conn.close()
 
 def start():
     status_server_port = 5001
@@ -122,6 +135,7 @@ def start():
     ram_usage_server_port = 5005
     latitude_server_port = 5006
     longitude_server_port = 5007
+    altitude_server_port = 5008
 
     status_addr = (HOST, status_server_port)
     distance_addr = (HOST, distance_server_port)
@@ -130,6 +144,7 @@ def start():
     ram_usage_addr = (HOST, ram_usage_server_port)
     latitude_addr = (HOST, latitude_server_port)
     longitude_addr = (HOST, longitude_server_port)
+    altitude_addr = (HOST, altitude_server_port)
 
     status_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     status_server.bind(status_addr)
@@ -159,6 +174,10 @@ def start():
     longitude_server.bind(longitude_addr)
     longitude_server.listen()
 
+    altitude_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    altitude_server.bind(altitude_addr)
+    altitude_server.listen()
+
     print(f"[LISTENING] Server is listening on {HOST}")
 
     while True:
@@ -169,6 +188,7 @@ def start():
         ram_usage_server_conn, ram_usage_server_addr = ram_usage_server.accept()
         latitude_server_conn, latitude_server_addr = latitude_server.accept()
         longitude_server_conn, longitude_server_addr = longitude_server.accept()
+        altitude_server_conn, altitude_server_addr = altitude_server.accept()
 
         thread_count = threading.active_count() - 1
 
@@ -195,6 +215,10 @@ def start():
         longitude_server_thread = threading.Thread(target=handle_robot_longitude_client,
                                                    args=(longitude_server_conn, longitude_server_addr))
         longitude_server_thread.start()
+
+        altitude_server_thread = threading.Thread(target=handle_robot_latitude_client, args=(altitude_server_conn, altitude_server_addr))
+        
+        altitude_server_thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
     # port = 5001
@@ -262,10 +286,16 @@ def get_ram_info():
 
 
 def get_distance():
-    # path = 'C:\\Users\\Username\\Path\\To\\File'
-    path = '\home\pi\adeept_picarpro\server\distData.txt'
-    with open(path, 'r') as f:
-        return str(f.read())
+    a = open("/home/pi/adeept_picarpro/server/distData.txt", "r")
+    #print("***distance: " + a.read())
+    #distance= str(a.readline())
+    #a.close()
+    #return distance
+    value = float(a.readline())
+    value = str(value)
+    a.close()
+    return value
+
 
 
 print("[STARTING] server is starting...")

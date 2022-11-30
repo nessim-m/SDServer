@@ -13,7 +13,7 @@ time.sleep(0.1)
 
 #img = cv2.imread('sampleimg_nn.jpg')
 
-thres = 0.3 # Threshold to detect object
+thres = 0.6 # Threshold to detect object
 
 cap = cv2.VideoCapture(0)
 #cap = img
@@ -45,9 +45,9 @@ def gen_frame():
 
 		if len(classIds) != 0:
 			for classId, confidence,box in zip(classIds.flatten(),confs.flatten(),bbox):
-				if classNames[classId-1] == 'apple':
+				if True:
 					cv2.rectangle(img,box,color=(0,255,0),thickness=2)
-					cv2.putText(img,'GOAL',(box[0]+10,box[1]+30),
+					cv2.putText(img,classNames[classId-1],(box[0]+10,box[1]+30),
 					cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
 					cv2.putText(img,str(round(confidence*100,2)),(box[0]+200,box[1]+30),
 					cv2.FONT_HERSHEY_COMPLEX,1,(0,255,0),2)
